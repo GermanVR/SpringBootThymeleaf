@@ -1,4 +1,4 @@
-package com.german.springboot.service;
+package com.german.springboot.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import com.german.springboot.component.ContactConverter;
 import com.german.springboot.entity.Contacto;
 import com.german.springboot.model.ContactoModel;
 import com.german.springboot.repository.ContactoRepository;
+import com.german.springboot.service.ContactoService;
 
 @Service
 public class ContactoServiceImp implements ContactoService {
@@ -23,7 +24,7 @@ public class ContactoServiceImp implements ContactoService {
 	@Override
 	public List<ContactoModel> listarContactos() {
 
-		List<Contacto> listContactos = contactoRepository.getByEstatusGreaterThan("0");
+		List<Contacto> listContactos = contactoRepository.getByEstatusGreaterThan("-1");
 		List<ContactoModel> listaContactosModel = new ArrayList<>();
 		for (Contacto contacto : listContactos) {
 			listaContactosModel.add(contactConverter.convertirDeContactoAModel(contacto));

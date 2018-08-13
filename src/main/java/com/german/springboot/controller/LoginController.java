@@ -1,32 +1,32 @@
 package com.german.springboot.controller;
 
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.german.springboot.constant.ConstantesVistas;
-import com.german.springboot.model.UserCredenciales;
 
 @Controller
 public class LoginController {
 
-	@GetMapping(value = "/")
-	public String toLogin() {
-		return "redirect:/login";
-	}
+	private Logger log = Logger.getLogger(LoginController.class);
 
 	@GetMapping("/login")
-	public String login() {
+	public String login(Model model, 
+			@RequestParam(name = "error", required = false) String error, 
+			@RequestParam(name = "logout", required = false) String logout) {
+		log.info("En /login");
+		model.addAttribute("error", error);
+		model.addAttribute("logout", logout);
 		return ConstantesVistas.LOGIN;
 	}
 
-	@PostMapping(value = "/logeo")
-	public String loginCheck(@ModelAttribute(name = "userCredenciales") UserCredenciales userCredenciales) {
-		if (userCredenciales.getUsername().equals("admin") && userCredenciales.getPassword().equals("admin")) {
-			return "redirect:/contactos/listaContactos";
-		}
-		return "redirect:/login";
+	@GetMapping(value = { "/loginsuccess", "/" })
+	public String loginCheck() {
+		log.info("En /loginsuccess");
+		return "redirect:/contactos/listaContactos";
 	}
 
 	// @GetMapping(value = "/si")

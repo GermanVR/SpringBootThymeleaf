@@ -17,17 +17,21 @@
 
 <body>
 	<div class="container">
-		<form class="form-signin" th:action="@{/logeo}" method="post" th:object="${userCredenciales}">
+		<form class="form-signin" th:action="@{/logincheck}" method="POST">
+		<input type="hidden" name ="${__csrf.parameterName}" value="${__csrf.token}">
 			<h2 class="form-signin-heading">Inicia Session!</h2>
 			<label for="username" class="sr-only">Usuario</label> 
-			<input type="text" id="username"  name="username" class="form-control" placeholder="Username" /> 
-			<label for="password" class="sr-only">Contraseña</label> 
-			<input type="password" id="password" name="password" class="form-control" placeholder="Password" />
+			<input type="text" id="username" name="username" class="form-control" placeholder="Username" />
+			 <label for="password" class="sr-only">Contraseña</label>
+			<input type="password" id="password" name="password"
+				class="form-control" placeholder="Password" />
 			<button class="btn btn-lg btn-primary btn-block" type="submit">
 				<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
 				Loguear!
 			</button>
 		</form>
+	<div class="alert alert-danger" role="alert" th:if="${error != null}">Usuario y/o Contraseña Incorrecta</div>
+	<div class="alert alert-warning" role="alert" th:if="${logout != null}">Session Cerrada</div>
 	</div>
 	<!-- /container -->
 </body>
