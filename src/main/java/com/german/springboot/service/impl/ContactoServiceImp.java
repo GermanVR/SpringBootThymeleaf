@@ -1,5 +1,7 @@
 package com.german.springboot.service.impl;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,18 @@ public class ContactoServiceImp implements ContactoService {
 	@Override
 	public List<ContactoModel> listarContactos() {
 
-		List<Contacto> listContactos = contactoRepository.getByEstatusGreaterThan("-1");
+		List<Contacto> listContactos = contactoRepository.findAll();
+		List<ContactoModel> listaContactosModel = new ArrayList<>();
+		for (Contacto contacto : listContactos) {
+			listaContactosModel.add(contactConverter.convertirDeContactoAModel(contacto));
+		}
+		return listaContactosModel;
+	}
+
+	@Override
+	public List<ContactoModel> listarContactosPorEstatus() {
+
+		List<Contacto> listContactos = contactoRepository.getByEstatusGreaterThan("0");
 		List<ContactoModel> listaContactosModel = new ArrayList<>();
 		for (Contacto contacto : listContactos) {
 			listaContactosModel.add(contactConverter.convertirDeContactoAModel(contacto));
@@ -48,6 +61,17 @@ public class ContactoServiceImp implements ContactoService {
 	@Override
 	public ContactoModel buscarContactoPorId(int id) {
 		return contactConverter.convertirDeContactoAModel(contactoRepository.findById(id).get());
+	}
+
+	@Override
+	public boolean aprobarContacto(int id, int option) {
+		Contacto contacto = contactoRepository.findById(id).get();
+		if (contacto != null) {
+			contacto.setEstatus(option == 1 ? "0" : "1");
+			contactoRepository.save(contacto);
+			return true;
+		}
+		return false;
 	}
 
 }

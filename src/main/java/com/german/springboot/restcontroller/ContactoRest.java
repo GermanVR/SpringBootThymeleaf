@@ -22,7 +22,7 @@ public class ContactoRest {
 
 	@GetMapping(value = "/contactos")
 	public ResponseEntity<List<ContactoModel>> obtieneContactos() {
-		return new ResponseEntity<List<ContactoModel>>(contactoService.listarContactos(), HttpStatus.OK);
+		return new ResponseEntity<List<ContactoModel>>(contactoService.listarContactosPorEstatus(), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/contacto/{id}")

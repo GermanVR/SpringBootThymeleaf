@@ -1,5 +1,7 @@
 package com.german.springboot.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,12 +23,13 @@ import com.german.springboot.service.ContactoService;
 @RequestMapping("/contactos")
 public class ContactoController {
 
+	private static Log log = LogFactory.getLog(ContactoController.class);
 	@Autowired
 	private ContactoService contactoService;
 
 	@GetMapping("/listaContactos")
 	public String listaContactos(Model model) {
-		model.addAttribute("contactos", contactoService.listarContactos());
+		model.addAttribute("contactos", contactoService.listarContactosPorEstatus());
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		model.addAttribute("username", user.getUsername().toUpperCase());
 		return ConstantesVistas.CONTACTOS;
@@ -46,7 +49,7 @@ public class ContactoController {
 	}
 
 	@PostMapping("/contacto")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public String agregaContacto(@ModelAttribute(name = "contactoModel") ContactoModel contactoModel, RedirectAttributes model) {
 		int ins = contactoModel.getId();
 		ContactoModel contactoModelGuardado = null;
@@ -88,5 +91,28 @@ public class ContactoController {
 		ContactoModel con = contactoService.buscarContactoPorId(id);
 		model.addAttribute("contactoModel", con);
 		return "contactform";
+	}
+
+	@PostMapping("/contacto/{id}/{option}")
+	public String aprobarContacto(@PathVariable(name = "id") int id, @PathVariable int option, RedirectAttributes model) {
+		boolean bol = contactoService.aprobarContacto(id, option);
+		if (bol) {
+			model.addFlashAttribute("respuesta", option == 0 ? "Contacto Aprobado Correctamente" : "Contacto Rechazado Correctamente");
+			model.addFlashAttribute("cod", "1");
+		} else {
+			model.addFlashAttribute("respuesta", "Error al Aprobar Contacto!!");
+			model.addFlashAttribute("cod", "-1");
+		}
+		return "redirect:/contactos/admin";
+	}
+
+	@GetMapping("/admin")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String adminContactos(Model model) {
+		log.info("en admin Contactos");
+		model.addAttribute("contactos", contactoService.listarContactos());
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		model.addAttribute("admin", user.getUsername().toUpperCase());
+		return "admin/contactos";
 	}
 }

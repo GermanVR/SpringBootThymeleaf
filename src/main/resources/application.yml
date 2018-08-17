@@ -18,9 +18,13 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
+        show_sql: false
         use_sql_comments: true
         format_sql: true 
 #Thymeleaf
   thymeleaf:
     cache: false
+    
+#logging:
+#  pattern:
+#    console: "%d %-5level [%thread] %logger : %msg%n"

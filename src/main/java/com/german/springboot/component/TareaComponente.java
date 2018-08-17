@@ -12,7 +12,7 @@ public class TareaComponente {
 
 	private static final Log log = LogFactory.getLog(TareaComponente.class);
 
-	@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = 100000)
 	public void ejecutaTarea() {
 		log.info("La hora es: " + new Date());
 	}

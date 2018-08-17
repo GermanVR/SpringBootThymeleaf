@@ -37,7 +37,7 @@ public class RequestTimeInterceptor extends HandlerInterceptorAdapter {
 		String url = request.getRequestURI().toString();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.isAuthenticated()) {
-			logRepository.save(new Log(new Date(), auth.getDetails().toString(), auth.getName(), url));	
+//			logRepository.save(new Log(new Date(), auth.getDetails().toString(), auth.getName(), url));	
 		}
 		super.afterCompletion(request, response, handler, ex);
 	}
